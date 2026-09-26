@@ -1,8 +1,8 @@
 # GitHub App Setup Guide
 
 This file is the checklist for wiring the live GitHub integration. Registration,
-deployment, OAuth, and repository discovery are configured; the artifact flow is
-complete after an installed repository produces its first Rite workflow run.
+deployment, OAuth, repository discovery, and the SHA-bound artifact flow are
+configured and verified.
 
 ---
 
@@ -166,4 +166,4 @@ node src/cli/rite.js server --port 3001
 | Env vars set | ✅ Configured on the deployed server |
 | App installed on target repo | ✅ Verified |
 | Public OAuth redirect | ✅ Verified at `https://rite.timidan.xyz/github/login` |
-| SHA-bound live artifact read | ⬜ Pending the target repo's first Rite workflow run |
+| SHA-bound live artifact read | ✅ Verified from Cuebound workflow run `36234330975` |

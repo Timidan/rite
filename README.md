@@ -126,8 +126,8 @@ the reviewed local files; Rite never silently writes to a connected repository.
 Registration, environment variables, callback URLs, permissions, and the
 webhook setting are documented in
 [`docs/github-app-setup.md`](./docs/github-app-setup.md). The live GitHub flow
-has verified OAuth and repository discovery; report display still requires a
-target repository to produce its first Rite workflow artifact.
+has verified OAuth, repository discovery, and a SHA-bound artifact read from
+Cuebound's passing Rite workflow.
 
 ## MCP server
 
