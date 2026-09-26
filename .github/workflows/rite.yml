@@ -37,9 +37,7 @@ jobs:
         run: |
           node src/cli/rite.js verify \
             --config examples/refund/rite.config.json \
-            --out rite-report.json \
-            --sarif rite-results.sarif
-        # Note: --sarif flag wired in CLI below; output used by code-scanning upload.
+            --out rite-report.json
 
       - name: Upload Rite report artifact
         # Always runs — even on FAIL — so the report is always available.
@@ -51,14 +49,6 @@ jobs:
           # GitHub Actions artifacts are retained for 90 days by default.
           # The Rite web UI fetches this artifact via the GitHub API.
           retention-days: 90
-
-      - name: Upload SARIF to GitHub Code Scanning
-        # Only if the sarif file exists (requires Code Scanning enabled on repo).
-        if: always() && hashFiles('rite-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: rite-results.sarif
-          category: rite-authorization
 
       - name: Write job summary
         if: always()
