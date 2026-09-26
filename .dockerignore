@@ -1,0 +1,11 @@
+.env
+.git
+.impeccable
+node_modules
+test
+docs
+evidence
+public
+bob_sessions
+examples
+scripts

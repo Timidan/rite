@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "ruleId": "refund-owner-once",
+  "rule": "Only the owner of a paid, unrefunded order may receive exactly one refund. Denied requests must produce zero refund events and leave order and ledger state unchanged.",
+  "adapter": "./rite.adapter.mjs",
+  "paths": [
+    { "entry": "customerRefund", "sink": "issueRefund", "source": "../../src/refunds.js" },
+    { "entry": "supportRefund",  "sink": "issueRefund", "source": "../../src/refunds.js" }
+  ],
+  "cases": [
+    {
+      "id": "valid-owner-customer",
+      "path": "customerRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-paid" },
+      "expected": {
+        "decision": "allow",
+        "effects": [
+          { "orderId": "order-paid", "actorId": "actor-owner", "amountCents": 4900, "currency": "USD" }
+        ],
+        "stateChanged": true
+      }
+    },
+    {
+      "id": "valid-owner-support",
+      "path": "supportRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-paid" },
+      "expected": {
+        "decision": "allow",
+        "effects": [
+          { "orderId": "order-paid", "actorId": "actor-owner", "amountCents": 4900, "currency": "USD" }
+        ],
+        "stateChanged": true
+      }
+    },
+    {
+      "id": "wrong-owner-customer",
+      "path": "customerRefund",
+      "actor": "actor-other",
+      "input": { "orderId": "order-paid" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "wrong-owner-support",
+      "path": "supportRefund",
+      "actor": "actor-other",
+      "input": { "orderId": "order-paid" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "unpaid-order-customer",
+      "path": "customerRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-unpaid" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "unpaid-order-support",
+      "path": "supportRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-unpaid" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "already-refunded-customer",
+      "path": "customerRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-refunded" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "already-refunded-support",
+      "path": "supportRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-refunded" },
+      "expected": { "decision": "deny", "effects": [], "stateChanged": false }
+    },
+    {
+      "id": "repeat-refund-customer",
+      "path": "customerRefund",
+      "actor": "actor-owner",
+      "input": { "orderId": "order-paid-b" },
+      "expected": {
+        "decision": "allow",
+        "effects": [
+          { "orderId": "order-paid-b", "actorId": "actor-owner", "amountCents": 4900, "currency": "USD" }
+        ],
+        "stateChanged": true
+      }
+    }
+  ]
+}

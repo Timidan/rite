@@ -1,0 +1,43 @@
+name: Rite Authorization Check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  rite-verify:
+    name: Rite — verify authorization rule
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Rite verification
+        run: >-
+          npx --yes @timidan/rite@0.1.0 verify
+          --config rite.config.json
+          --out rite-report.json
+
+      - name: Upload Rite report
+        if: always() && hashFiles('rite-report.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: rite-report
+          path: rite-report.json
+          retention-days: 90
+
+      - name: Write job summary
+        if: always() && hashFiles('rite-report.json') != ''
+        run: npx --yes @timidan/rite@0.1.0 report rite-report.json >> "$GITHUB_STEP_SUMMARY"

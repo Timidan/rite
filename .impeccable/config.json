@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/styles.css"
+        ],
+        "createdAt": "2026-09-26T06:25:00.911Z",
+        "reason": "Existing borders encode selected-path and verification-failure states; they predate the landing-page work and are not decorative cards."
+      }
+    ]
+  }
+}

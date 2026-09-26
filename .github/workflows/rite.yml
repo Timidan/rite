@@ -1,0 +1,88 @@
+name: Rite Authorization Check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+# Minimal permissions — read-only. Never use pull_request_target.
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  rite-verify:
+    name: Rite — verify authorization rule
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # Pins to the triggering commit SHA — report is bound to this SHA.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Rite verification
+        id: rite
+        # Exit 0 = PASS, 1 = FAIL, 2 = ERROR — job conclusion reflects this.
+        # IBM credentials are NOT passed here; watsonx draft is a local dev step only.
+        run: |
+          node src/cli/rite.js verify \
+            --config examples/refund/rite.config.json \
+            --out rite-report.json \
+            --sarif rite-results.sarif
+        # Note: --sarif flag wired in CLI below; output used by code-scanning upload.
+
+      - name: Upload Rite report artifact
+        # Always runs — even on FAIL — so the report is always available.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rite-report
+          path: rite-report.json
+          # GitHub Actions artifacts are retained for 90 days by default.
+          # The Rite web UI fetches this artifact via the GitHub API.
+          retention-days: 90
+
+      - name: Upload SARIF to GitHub Code Scanning
+        # Only if the sarif file exists (requires Code Scanning enabled on repo).
+        if: always() && hashFiles('rite-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: rite-results.sarif
+          category: rite-authorization
+
+      - name: Write job summary
+        if: always()
+        run: |
+          if [ -f rite-report.json ]; then
+            STATUS=$(node -e "const r=require('./rite-report.json'); process.stdout.write(r.status)")
+            TOTAL=$(node -e "const r=require('./rite-report.json'); process.stdout.write(String(r.results.length))")
+            PASSED=$(node -e "const r=require('./rite-report.json'); process.stdout.write(String(r.results.filter(x=>x.status==='PASS').length))")
+            echo "## Rite Authorization Check" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Status:** \`${STATUS}\`  |  **Passed:** ${PASSED}/${TOTAL}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Rule:** $(node -e "const r=require('./rite-report.json'); process.stdout.write(r.rule)")" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Case | Path | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|---|---|---|" >> $GITHUB_STEP_SUMMARY
+            node -e "
+              const r = require('./rite-report.json');
+              for (const c of r.results) {
+                const icon = c.status === 'PASS' ? '✅' : c.status === 'FAIL' ? '❌' : '⚠️';
+                console.log('| ' + c.id + ' | ' + c.path + ' | ' + icon + ' ' + c.status + ' |');
+              }
+            " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## Rite Authorization Check" >> $GITHUB_STEP_SUMMARY
+            echo "**ERROR:** rite-report.json was not produced. Check the verify step logs." >> $GITHUB_STEP_SUMMARY
+          fi

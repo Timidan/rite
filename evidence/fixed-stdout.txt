@@ -1,0 +1,127 @@
+TAP version 13
+# Subtest: Boundary checks
+    # Subtest: Extra field in request rejected
+    ok 1 - Extra field in request rejected
+      ---
+      duration_ms: 2.990143
+      type: 'test'
+      ...
+    # Subtest: Missing actor context denied
+    ok 2 - Missing actor context denied
+      ---
+      duration_ms: 0.753318
+      type: 'test'
+      ...
+    # Subtest: Empty actorId denied
+    ok 3 - Empty actorId denied
+      ---
+      duration_ms: 1.055189
+      type: 'test'
+      ...
+    1..3
+ok 1 - Boundary checks
+  ---
+  duration_ms: 7.938154
+  type: 'suite'
+  ...
+# Subtest: Policy suite
+    # Subtest: runSuite produces exactly 10 results
+    ok 1 - runSuite produces exactly 10 results
+      ---
+      duration_ms: 1.630523
+      type: 'test'
+      ...
+    # Subtest: All 10 expected result IDs present exactly once
+    ok 2 - All 10 expected result IDs present exactly once
+      ---
+      duration_ms: 1.062976
+      type: 'test'
+      ...
+    # Subtest: No result has ERROR status
+    ok 3 - No result has ERROR status
+      ---
+      duration_ms: 1.099344
+      type: 'test'
+      ...
+    # Subtest: valid-owner:customer — PASS
+    ok 4 - valid-owner:customer — PASS
+      ---
+      duration_ms: 1.243466
+      type: 'test'
+      ...
+    # Subtest: valid-owner:support — PASS
+    ok 5 - valid-owner:support — PASS
+      ---
+      duration_ms: 4.410867
+      type: 'test'
+      ...
+    # Subtest: wrong-owner:customer — PASS
+    ok 6 - wrong-owner:customer — PASS
+      ---
+      duration_ms: 1.293882
+      type: 'test'
+      ...
+    # Subtest: wrong-owner:support — PASS
+    ok 7 - wrong-owner:support — PASS
+      ---
+      duration_ms: 0.671276
+      type: 'test'
+      ...
+    # Subtest: unpaid-order:customer — PASS
+    ok 8 - unpaid-order:customer — PASS
+      ---
+      duration_ms: 0.360128
+      type: 'test'
+      ...
+    # Subtest: unpaid-order:support — PASS
+    ok 9 - unpaid-order:support — PASS
+      ---
+      duration_ms: 0.395762
+      type: 'test'
+      ...
+    # Subtest: already-refunded:customer — PASS
+    ok 10 - already-refunded:customer — PASS
+      ---
+      duration_ms: 0.331288
+      type: 'test'
+      ...
+    # Subtest: already-refunded:support — PASS
+    ok 11 - already-refunded:support — PASS
+      ---
+      duration_ms: 0.398905
+      type: 'test'
+      ...
+    # Subtest: repeat-request:customer — first REFUNDED, second ALREADY_REFUNDED, one event total
+    ok 12 - repeat-request:customer — first REFUNDED, second ALREADY_REFUNDED, one event total
+      ---
+      duration_ms: 0.518472
+      type: 'test'
+      ...
+    # Subtest: repeat-request:support — first REFUNDED, second ALREADY_REFUNDED, one event total
+    ok 13 - repeat-request:support — first REFUNDED, second ALREADY_REFUNDED, one event total
+      ---
+      duration_ms: 0.532704
+      type: 'test'
+      ...
+    # Subtest: Suite aggregate status is PASS
+    ok 14 - Suite aggregate status is PASS
+      ---
+      duration_ms: 0.323926
+      type: 'test'
+      ...
+    1..14
+ok 2 - Policy suite
+  ---
+  duration_ms: 16.866345
+  type: 'suite'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 307.478588
+

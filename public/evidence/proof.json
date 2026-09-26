@@ -1,0 +1,3473 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-26T06:40:57.035Z",
+  "status": "PASS",
+  "runtime": {
+    "node": "v22.23.1",
+    "platform": "linux"
+  },
+  "scope": {
+    "entryPaths": [
+      "customerRefund",
+      "supportRefund"
+    ],
+    "domainFile": "src/refunds.js",
+    "testFile": "test/refunds.test.js",
+    "casesFile": "src/cases.js",
+    "checksFile": "src/checks.js",
+    "effectsFile": "src/instrument/effect-schema.js"
+  },
+  "hashes": {
+    "policy": "e2c7cfa32a4714db5c2f9ab2ce03512a36f7eb7c52f72a4f8e1e2a54ab5eae2a",
+    "cases": "9226f092eb3cbb90a02d6ce07e3ea00ad99a514558b0c1dc8b90a477d07efbfa",
+    "checks": "1a077980a13f2357805c82744c4e4df5b6438f16e481bf77fb4381f5cfc90ac2",
+    "effects": "28af75508166f8e5112d51d59c827584036eee3ed4d1cb86338e00cf598bb6da",
+    "test": "67b7e17632ffac4580b6248f2c0b2fb97d78dbb0623f0be5d9f08c855e77c123"
+  },
+  "phases": [
+    {
+      "id": "baseline",
+      "label": "Baseline (support ownership omission)",
+      "command": "node --test test/refunds.test.js",
+      "exitCode": 1,
+      "signal": null,
+      "sourceHash": "1c830a50d5a28db9ec48fc6fd58c64c945187a6a3ce463f5f55a2ce0cdca2e18",
+      "resultStatus": "FAIL",
+      "expectationMet": true,
+      "witnesses": [
+        "wrong-owner:support"
+      ],
+      "results": [
+        {
+          "id": "valid-owner:customer",
+          "entry": "customer",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "valid-owner:support",
+          "entry": "support",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:customer",
+          "entry": "customer",
+          "label": "Wrong owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_OWNER"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:support",
+          "entry": "support",
+          "label": "Wrong owner",
+          "status": "FAIL",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-other",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-other",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [
+            "wrong-owner:support call 1: expected ok=false; observed ok=true",
+            "wrong-owner:support call 1: expected code=NOT_OWNER; observed code=REFUNDED",
+            "wrong-owner:support call 1: expected 0 new sink event(s); observed 1 for order order-paid by actor-other",
+            "wrong-owner:support call 1: expected order.refunded=false; observed true",
+            "wrong-owner:support call 1: state mutated on denial — Order order-paid.refunded mutated: false → true"
+          ],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:customer",
+          "entry": "customer",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:support",
+          "entry": "support",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:customer",
+          "entry": "customer",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:support",
+          "entry": "support",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:customer",
+          "entry": "customer",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:support",
+          "entry": "support",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "fixed",
+      "label": "Fixed (shared authorization enforced)",
+      "command": "node --test test/refunds.test.js",
+      "exitCode": 0,
+      "signal": null,
+      "sourceHash": "7c8a25d3e8914de539be1189183386324b7bb1e25106808273076e2261136195",
+      "resultStatus": "PASS",
+      "expectationMet": true,
+      "witnesses": [
+        "valid-owner:customer",
+        "valid-owner:support",
+        "wrong-owner:customer",
+        "wrong-owner:support",
+        "unpaid-order:customer",
+        "unpaid-order:support",
+        "already-refunded:customer",
+        "already-refunded:support",
+        "repeat-request:customer",
+        "repeat-request:support"
+      ],
+      "results": [
+        {
+          "id": "valid-owner:customer",
+          "entry": "customer",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "valid-owner:support",
+          "entry": "support",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:customer",
+          "entry": "customer",
+          "label": "Wrong owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_OWNER"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:support",
+          "entry": "support",
+          "label": "Wrong owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_OWNER"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:customer",
+          "entry": "customer",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:support",
+          "entry": "support",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:customer",
+          "entry": "customer",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:support",
+          "entry": "support",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:customer",
+          "entry": "customer",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:support",
+          "entry": "support",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "mutation",
+      "label": "Ownership-check mutation detected",
+      "command": "node --test test/refunds.test.js",
+      "exitCode": 1,
+      "signal": null,
+      "sourceHash": "cb17864a67c4730c9bcc6a563b79794ebeb3f4d3bdf3918ba00d0b25493757c6",
+      "resultStatus": "FAIL",
+      "expectationMet": true,
+      "witnesses": [
+        "wrong-owner:customer",
+        "wrong-owner:support"
+      ],
+      "results": [
+        {
+          "id": "valid-owner:customer",
+          "entry": "customer",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "valid-owner:support",
+          "entry": "support",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:customer",
+          "entry": "customer",
+          "label": "Wrong owner",
+          "status": "FAIL",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-other",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-other",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [
+            "wrong-owner:customer call 1: expected ok=false; observed ok=true",
+            "wrong-owner:customer call 1: expected code=NOT_OWNER; observed code=REFUNDED",
+            "wrong-owner:customer call 1: expected 0 new sink event(s); observed 1 for order order-paid by actor-other",
+            "wrong-owner:customer call 1: expected order.refunded=false; observed true",
+            "wrong-owner:customer call 1: state mutated on denial — Order order-paid.refunded mutated: false → true"
+          ],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:support",
+          "entry": "support",
+          "label": "Wrong owner",
+          "status": "FAIL",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-other",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-other",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [
+            "wrong-owner:support call 1: expected ok=false; observed ok=true",
+            "wrong-owner:support call 1: expected code=NOT_OWNER; observed code=REFUNDED",
+            "wrong-owner:support call 1: expected 0 new sink event(s); observed 1 for order order-paid by actor-other",
+            "wrong-owner:support call 1: expected order.refunded=false; observed true",
+            "wrong-owner:support call 1: state mutated on denial — Order order-paid.refunded mutated: false → true"
+          ],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:customer",
+          "entry": "customer",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:support",
+          "entry": "support",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:customer",
+          "entry": "customer",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:support",
+          "entry": "support",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:customer",
+          "entry": "customer",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:support",
+          "entry": "support",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "restored",
+      "label": "Restored (exact fixed bytes)",
+      "command": "node --test test/refunds.test.js",
+      "exitCode": 0,
+      "signal": null,
+      "sourceHash": "7c8a25d3e8914de539be1189183386324b7bb1e25106808273076e2261136195",
+      "resultStatus": "PASS",
+      "expectationMet": true,
+      "witnesses": [
+        "valid-owner:customer",
+        "valid-owner:support",
+        "wrong-owner:customer",
+        "wrong-owner:support",
+        "unpaid-order:customer",
+        "unpaid-order:support",
+        "already-refunded:customer",
+        "already-refunded:support",
+        "repeat-request:customer",
+        "repeat-request:support"
+      ],
+      "results": [
+        {
+          "id": "valid-owner:customer",
+          "entry": "customer",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "valid-owner:support",
+          "entry": "support",
+          "label": "Valid owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:customer",
+          "entry": "customer",
+          "label": "Wrong owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_OWNER"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "wrong-owner:support",
+          "entry": "support",
+          "label": "Wrong owner",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_OWNER",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_OWNER"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:customer",
+          "entry": "customer",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "unpaid-order:support",
+          "entry": "support",
+          "label": "Unpaid order",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "NOT_PAID",
+                "sinkCalls": 0,
+                "orderAfterRefunded": false
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "NOT_PAID"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-unpaid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "unpaid",
+                  "amountCents": 2200,
+                  "currency": "USD",
+                  "refunded": false
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-unpaid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "unpaid",
+                      "amountCents": 2200,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:customer",
+          "entry": "customer",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "already-refunded:support",
+          "entry": "support",
+          "label": "Already refunded",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-refunded",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 3300,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-refunded",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 3300,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": []
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:customer",
+          "entry": "customer",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        },
+        {
+          "id": "repeat-request:support",
+          "entry": "support",
+          "label": "Repeat request",
+          "status": "PASS",
+          "calls": [
+            {
+              "expected": {
+                "ok": true,
+                "code": "REFUNDED",
+                "sinkCalls": 1,
+                "event": {
+                  "orderId": "order-paid",
+                  "actorId": "actor-owner",
+                  "amountCents": 4900,
+                  "currency": "USD"
+                },
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": true,
+                  "code": "REFUNDED",
+                  "refundId": "refund-1"
+                },
+                "sinkCalls": 1,
+                "events": [
+                  {
+                    "refundId": "refund-1",
+                    "orderId": "order-paid",
+                    "actorId": "actor-owner",
+                    "amountCents": 4900,
+                    "currency": "USD"
+                  }
+                ],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": false
+                    }
+                  ],
+                  "events": []
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "expected": {
+                "ok": false,
+                "code": "ALREADY_REFUNDED",
+                "sinkCalls": 0,
+                "orderAfterRefunded": true
+              },
+              "observed": {
+                "result": {
+                  "ok": false,
+                  "code": "ALREADY_REFUNDED"
+                },
+                "sinkCalls": 0,
+                "events": [],
+                "orderAfter": {
+                  "id": "order-paid",
+                  "ownerId": "actor-owner",
+                  "paymentStatus": "paid",
+                  "amountCents": 4900,
+                  "currency": "USD",
+                  "refunded": true
+                },
+                "snapshotBefore": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                },
+                "snapshotAfter": {
+                  "orders": [
+                    {
+                      "id": "order-paid",
+                      "ownerId": "actor-owner",
+                      "paymentStatus": "paid",
+                      "amountCents": 4900,
+                      "currency": "USD",
+                      "refunded": true
+                    }
+                  ],
+                  "events": [
+                    {
+                      "refundId": "refund-1",
+                      "orderId": "order-paid",
+                      "actorId": "actor-owner",
+                      "amountCents": 4900,
+                      "currency": "USD"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "failures": [],
+          "error": null
+        }
+      ]
+    }
+  ]
+}

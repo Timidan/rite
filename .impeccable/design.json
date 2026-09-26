@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T08:06:28Z",
+  "title": "Design System: Rite",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#faf8f3",
+        "tonalRamp": ["oklch(15% 0.01 85)", "oklch(27% 0.01 85)", "oklch(39% 0.01 85)", "oklch(51% 0.01 85)", "oklch(63% 0.01 85)", "oklch(75% 0.01 85)", "oklch(87% 0.01 85)", "oklch(95% 0.01 85)"]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Instrument Panel",
+        "canonical": "#fffefb",
+        "tonalRamp": ["oklch(15% 0.005 85)", "oklch(27% 0.005 85)", "oklch(39% 0.005 85)", "oklch(51% 0.005 85)", "oklch(63% 0.005 85)", "oklch(75% 0.005 85)", "oklch(87% 0.005 85)", "oklch(95% 0.005 85)"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "#1c1f26",
+        "tonalRamp": ["oklch(15% 0.015 260)", "oklch(27% 0.015 260)", "oklch(39% 0.015 260)", "oklch(51% 0.015 260)", "oklch(63% 0.015 260)", "oklch(75% 0.015 260)", "oklch(87% 0.015 260)", "oklch(95% 0.015 260)"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Measured Gray",
+        "canonical": "#4f5562",
+        "tonalRamp": ["oklch(15% 0.02 260)", "oklch(27% 0.02 260)", "oklch(39% 0.02 260)", "oklch(51% 0.02 260)", "oklch(63% 0.02 260)", "oklch(75% 0.02 260)", "oklch(87% 0.02 260)", "oklch(95% 0.02 260)"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Calibration Line",
+        "canonical": "#d8d2c4",
+        "tonalRamp": ["oklch(15% 0.015 85)", "oklch(27% 0.015 85)", "oklch(39% 0.015 85)", "oklch(51% 0.015 85)", "oklch(63% 0.015 85)", "oklch(75% 0.015 85)", "oklch(87% 0.015 85)", "oklch(95% 0.015 85)"]
+      },
+      "cobalt": {
+        "role": "primary",
+        "displayName": "Signal Cobalt",
+        "canonical": "#1f3ff0",
+        "tonalRamp": ["oklch(15% 0.24 267)", "oklch(27% 0.24 267)", "oklch(39% 0.24 267)", "oklch(51% 0.24 267)", "oklch(63% 0.24 267)", "oklch(75% 0.20 267)", "oklch(87% 0.12 267)", "oklch(95% 0.05 267)"]
+      },
+      "cobalt-deep": {
+        "role": "primary",
+        "displayName": "Deep Cobalt",
+        "canonical": "#1630c4",
+        "tonalRamp": ["oklch(15% 0.21 267)", "oklch(27% 0.21 267)", "oklch(39% 0.21 267)", "oklch(51% 0.21 267)", "oklch(63% 0.20 267)", "oklch(75% 0.17 267)", "oklch(87% 0.10 267)", "oklch(95% 0.04 267)"]
+      },
+      "cobalt-tint": {
+        "role": "primary",
+        "displayName": "Cobalt Tint",
+        "canonical": "#e6ebff",
+        "tonalRamp": ["oklch(15% 0.08 267)", "oklch(27% 0.08 267)", "oklch(39% 0.08 267)", "oklch(51% 0.08 267)", "oklch(63% 0.08 267)", "oklch(75% 0.07 267)", "oklch(87% 0.05 267)", "oklch(95% 0.025 267)"]
+      },
+      "coral": {
+        "role": "secondary",
+        "displayName": "Fault Coral",
+        "canonical": "#c42b12",
+        "tonalRamp": ["oklch(15% 0.18 32)", "oklch(27% 0.18 32)", "oklch(39% 0.18 32)", "oklch(51% 0.18 32)", "oklch(63% 0.17 32)", "oklch(75% 0.14 32)", "oklch(87% 0.08 32)", "oklch(95% 0.035 32)"]
+      },
+      "coral-tint": {
+        "role": "secondary",
+        "displayName": "Fault Tint",
+        "canonical": "#fce9e4",
+        "tonalRamp": ["oklch(15% 0.06 32)", "oklch(27% 0.06 32)", "oklch(39% 0.06 32)", "oklch(51% 0.06 32)", "oklch(63% 0.06 32)", "oklch(75% 0.055 32)", "oklch(87% 0.04 32)", "oklch(95% 0.02 32)"]
+      },
+      "on-cobalt": {
+        "role": "neutral",
+        "displayName": "Signal White",
+        "canonical": "#ffffff",
+        "tonalRamp": ["oklch(15% 0 0)", "oklch(27% 0 0)", "oklch(39% 0 0)", "oklch(51% 0 0)", "oklch(63% 0 0)", "oklch(75% 0 0)", "oklch(87% 0 0)", "oklch(95% 0 0)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Product proposition and large verdicts." },
+      "headline": { "displayName": "Headline", "purpose": "Panel, detail, and disclosure titles." },
+      "title": { "displayName": "Title", "purpose": "Compact idle verdicts and prominent local state." },
+      "body": { "displayName": "Body", "purpose": "Brief explanation and operating copy." },
+      "label": { "displayName": "Instrument Label", "purpose": "Uppercase roles, states, and table headings." },
+      "mono": { "displayName": "Measured Data", "purpose": "Code, identifiers, hashes, and numeric evidence only." }
+    },
+    "shadows": [
+      { "name": "instrument-baseline", "value": "0 1px 0 var(--ink)", "purpose": "A restrained physical edge on the rule-to-verdict instrument only." }
+    ],
+    "motion": [
+      { "name": "ease-signal", "value": "cubic-bezier(0.2, 0, 0, 1)", "purpose": "Fast control states and the signal-wire pulse." },
+      { "name": "duration-control", "value": "120ms", "purpose": "Hover, focus-adjacent, and pressed-state transitions." },
+      { "name": "duration-signal", "value": "700ms", "purpose": "One directional pulse after a check run; disabled for reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "stack", "value": "1080px" },
+      { "name": "mobile", "value": "720px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Runs the primary check or starts the main connection action.",
+      "html": "<button class=\"ds-btn-primary\">Run sample checks</button>",
+      "css": ".ds-btn-primary { min-height: 44px; padding: 0 20px; font: 650 0.9375rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; color: var(--on-cobalt); background: var(--cobalt); border: 1px solid var(--cobalt); border-radius: var(--r-inner); cursor: pointer; transition: background-color 120ms var(--ease), border-color 120ms var(--ease), transform 120ms var(--ease); } .ds-btn-primary:hover { background: var(--cobalt-deep); border-color: var(--cobalt-deep); } .ds-btn-primary:active { transform: scale(0.96); } .ds-btn-primary:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supports reset, refresh, and other reversible secondary actions.",
+      "html": "<button class=\"ds-btn-secondary\">Reset</button>",
+      "css": ".ds-btn-secondary { min-height: 44px; padding: 0 20px; font: 650 0.9375rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; color: var(--ink); background: var(--panel); border: 1px solid var(--ink); border-radius: var(--r-inner); cursor: pointer; transition: background-color 120ms var(--ease), color 120ms var(--ease), transform 120ms var(--ease); } .ds-btn-secondary:hover { color: var(--on-cobalt); background: var(--ink); } .ds-btn-secondary:active { transform: scale(0.96); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    },
+    {
+      "name": "Path Filter",
+      "kind": "custom",
+      "description": "Switches the result matrix between both paths and either individual path.",
+      "html": "<div class=\"ds-segmented\"><button class=\"ds-seg\" aria-pressed=\"true\">Both paths</button><button class=\"ds-seg\">Customer</button><button class=\"ds-seg\">Support</button></div>",
+      "css": ".ds-segmented { display: inline-flex; padding: 3px; gap: 3px; background: var(--panel); border: 1px solid var(--ink); border-radius: var(--r-inner); } .ds-seg { min-height: 44px; padding: 0 14px; font: 600 0.9375rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; color: var(--ink); background: transparent; border: 0; border-radius: 2px; cursor: pointer; } .ds-seg:hover { background: var(--cobalt-tint); } .ds-seg[aria-pressed='true'] { color: var(--on-cobalt); background: var(--ink); } .ds-seg:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 1px; }"
+    },
+    {
+      "name": "Result Cell",
+      "kind": "custom",
+      "description": "Displays a runnable or observed result inside the check matrix.",
+      "html": "<button class=\"ds-result-cell\" data-status=\"PASS\"><span class=\"ds-result-dot\"></span>PASS</button>",
+      "css": ".ds-result-cell { display: flex; align-items: center; gap: 8px; min-width: 96px; min-height: 44px; padding: 0 14px; font: 700 0.8125rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; letter-spacing: 0.03em; color: var(--muted); background: transparent; border: 0; cursor: pointer; } .ds-result-cell:hover { background: var(--cobalt-tint); } .ds-result-cell[data-status='PASS'] { color: var(--cobalt-deep); } .ds-result-cell[data-status='FAIL'] { color: var(--coral); } .ds-result-dot { width: 10px; height: 10px; background: var(--cobalt); border: 2px solid var(--cobalt); border-radius: 2px; } .ds-result-cell[data-status='FAIL'] .ds-result-dot { background: var(--coral); border-color: var(--coral); } .ds-result-cell:focus-visible { outline: 2px solid var(--cobalt); outline-offset: -3px; }"
+    },
+    {
+      "name": "Repository Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Chooses an installed repository before loading workflow evidence.",
+      "html": "<label class=\"ds-field\"><span>Repository</span><select><option>Choose an installed repository</option></select></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font: 700 0.8125rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); } .ds-field select { width: 100%; min-height: 44px; padding: 0 12px; font: 500 1rem Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--ink); border-radius: var(--r-inner); } .ds-field select:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    },
+    {
+      "name": "Evidence Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Groups repository evidence, setup steps, or case detail without decorative elevation.",
+      "html": "<section class=\"ds-panel\"><h2>Repository evidence</h2><p>Reads SHA-bound Rite reports from installed repositories.</p></section>",
+      "css": ".ds-panel { padding: 20px; color: var(--ink); background: var(--panel); border: 1px solid var(--ink); border-radius: var(--r-outer); font-family: Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; } .ds-panel h2 { margin: 0 0 12px; font-size: 1.375rem; line-height: 1.2; letter-spacing: -0.01em; } .ds-panel p { margin: 0; max-width: 56ch; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; } .ds-panel:focus-within { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    },
+    {
+      "name": "Rule-to-Verdict Instrument",
+      "kind": "custom",
+      "description": "The signature diagnostic sequence from mapped paths through the shared gate to a verdict.",
+      "html": "<div class=\"ds-instrument\"><div class=\"ds-path\"><span>PATH 1</span><code>customerRefund()</code></div><div class=\"ds-wire\"></div><div class=\"ds-gate\"><span>SHARED GATE</span><code>authorizeAndRefund()</code></div><div class=\"ds-wire\"></div><div class=\"ds-verdict\"><span>VERDICT</span><strong>PASS</strong></div></div>",
+      "css": ".ds-instrument { display: grid; grid-template-columns: 1fr 32px 1.1fr 32px 0.8fr; align-items: stretch; padding: 20px; color: var(--ink); background: var(--panel); border: 1px solid var(--ink); border-radius: var(--r-outer); box-shadow: 0 1px 0 var(--ink); font-family: Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; } .ds-path, .ds-gate, .ds-verdict { display: flex; flex-direction: column; gap: 4px; padding: 14px; background: var(--paper); border: 1px solid var(--ink); border-radius: var(--r-inner); } .ds-gate { background: var(--cobalt-tint); border: 2px solid var(--cobalt); } .ds-instrument span { color: var(--muted); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; } .ds-instrument code { font: 600 0.8125rem ui-monospace, 'SF Mono', monospace; } .ds-verdict { border: 2px solid var(--cobalt); } .ds-verdict strong { color: var(--cobalt-deep); font-size: 2.5rem; line-height: 1; } .ds-wire { align-self: center; height: 2px; background: var(--cobalt); } .ds-instrument:focus-within { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    },
+    {
+      "name": "Sticky Navigation",
+      "kind": "nav",
+      "description": "Keeps the three operating sections available without competing with the instrument.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#sample\">Checks</a><a href=\"#github-evidence\">Repository</a><a href=\"#setup\">Setup</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 4px; padding: 8px; background: var(--paper); border-bottom: 1px solid var(--line); font-family: Seravek, 'Avenir Next', 'Segoe UI', system-ui, sans-serif; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--ink); font-size: 0.9375rem; font-weight: 600; text-decoration: none; border-radius: var(--r-inner); } .ds-nav a:hover { color: var(--cobalt-deep); background: var(--cobalt-tint); } .ds-nav a:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Verification Instrument",
+    "overview": "Rite looks like a precise bench instrument translated to the browser: bright, compact, and organized around signals moving from rules through mapped paths to a verdict. Warm paper and restrained graphite keep the interface approachable; cobalt marks active evidence and coral is reserved for failure.\n\nThe system favors direct observation over marketing explanation. Humanist sans-serif type carries hierarchy and action, while monospace appears only where code, identifiers, hashes, or measured output require it. It deliberately avoids Overcode's dark, monospaced editorial identity.",
+    "keyCharacteristics": [
+      "Warm, bright surfaces with crisp graphite boundaries.",
+      "Compact rule → path → gate → verdict structures.",
+      "Cobalt for action and passing evidence; coral only for failure.",
+      "Strong humanist typography with prose kept short."
+    ],
+    "rules": [
+      { "name": "The Two-Signal Rule", "body": "Cobalt means action or verified success; coral means failure. Do not create another semantic accent.", "section": "colors" },
+      { "name": "The Coral Is Evidence Rule", "body": "Never use coral decoratively. Its rarity makes failed observations immediately legible.", "section": "colors" },
+      { "name": "The Mono Measures Rule", "body": "Use monospace only for code and data. Navigation, buttons, headings, and prose remain humanist sans.", "section": "typography" },
+      { "name": "The Bench-Flat Rule", "body": "Surfaces stay flat and bordered; reserve the baseline shadow for the signature instrument.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do lead with observed state, the mapped scope, and the next action.",
+      "Do use cobalt consistently for interactive state and verified passing evidence.",
+      "Do preserve 44px controls, visible keyboard focus, and the vertical mobile instrument flow.",
+      "Do keep explanatory text short enough that the instrument remains the visual center."
+    ],
+    "donts": [
+      "Don't turn Rite into a dark, monospaced editorial interface.",
+      "Don't use coral for decoration, emphasis, or neutral warnings.",
+      "Don't add gradients, glass effects, diffuse card shadows, or oversized decorative radii.",
+      "Don't use monospace for headings, navigation, buttons, or ordinary prose."
+    ]
+  }
+}
