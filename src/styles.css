@@ -168,18 +168,13 @@ span.btn:hover { color: var(--muted); background: var(--panel); border-color: va
 
 main, .footer { max-width: 1360px; margin: 0 auto; padding-inline: 32px; }
 
-/* ---- Hero: asymmetric split. The proposition anchors low-left,
-   the instrument hangs high-right, so the two never share a baseline. ---- */
+/* ---- Hero: asymmetric split. The proposition centres on the instrument,
+   and the hero sizes to its content so the workbench starts at the fold. ---- */
 .hero {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  align-items: center;
   gap: 32px 64px;
   padding-block: 40px;
-}
-.hero-copy { align-self: end; }
-.hero .scope { align-self: start; }
-@media (min-width: 1081px) {
-  .hero { min-height: calc(100dvh - 61px); }
-  .hero-copy { padding-bottom: 24px; }
 }
 .eyebrow {
   margin-bottom: 20px;
