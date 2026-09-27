@@ -56,19 +56,19 @@ Run Rite without a global installation:
 
 ```bash
 # Create rite.config.json, rite.adapter.mjs, and the GitHub workflow
-npx --yes @timidan/rite@0.1.0 init
+npx --yes @timidan/rite@0.1.1 init
 
 # Review the generated rule and adapter, then verify
-npx --yes @timidan/rite@0.1.0 verify \
+npx --yes @timidan/rite@0.1.1 verify \
   --config rite.config.json \
   --out report.json \
   --sarif report.sarif
 
 # Inspect an existing report
-npx --yes @timidan/rite@0.1.0 report report.json
+npx --yes @timidan/rite@0.1.1 report report.json
 
 # Trace configured entries to a sink in one JavaScript file
-npx --yes @timidan/rite@0.1.0 graph \
+npx --yes @timidan/rite@0.1.1 graph \
   --file src/refunds.js \
   --entries customerRefund,supportRefund \
   --sink issueRefund
@@ -138,7 +138,7 @@ Configure an MCP client with:
   "mcpServers": {
     "rite": {
       "command": "npx",
-      "args": ["--yes", "@timidan/rite@0.1.0", "mcp"]
+      "args": ["--yes", "@timidan/rite@0.1.1", "mcp"]
     }
   }
 }
@@ -175,9 +175,9 @@ evidence/            Saved vulnerable source and proof records
 - All orders, payments, users, and effects are synthetic and held in memory.
 - No payment provider is contacted and no money moves.
 - External repositories require a reviewed config, adapter, and workflow.
-- GitHub sessions use the in-memory Express store and are lost on restart; the
-  current deployment shape is suitable for a single-process demo, not a
-  horizontally scaled production service.
+- Set `RITE_SESSION_DIR` to keep encrypted GitHub sessions across restarts. The
+  file store is intentionally single-process; use a shared session store before
+  horizontally scaling the server.
 - The optional watsonx.ai drafting request has not been verified with live
   credentials.
 

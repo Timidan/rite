@@ -72,9 +72,12 @@ GITHUB_APP_CLIENT_ID=Iv1.abcdef1234567890
 GITHUB_APP_CLIENT_SECRET=your_client_secret_here
 GITHUB_APP_PRIVATE_KEY_FILE=/absolute/path/to/rite-github-app.private-key.pem
 RITE_SESSION_SECRET=at_least_32_random_chars_here_change_this
+RITE_SESSION_DIR=/data/sessions
 RITE_PUBLIC_URL=https://rite.timidan.xyz
 PORT=3001
 ```
+
+When `RITE_SESSION_DIR` is set, Rite encrypts sessions with `RITE_SESSION_SECRET` and keeps them across restarts. Keep the directory app-owned and restricted to mode `0700`.
 
 Load it before starting the server:
 ```bash
@@ -101,7 +104,7 @@ The server will now be able to list that repo when the user authenticates.
 From the target repository, run:
 
 ```bash
-npx --yes @timidan/rite@0.1.0 init
+npx --yes @timidan/rite@0.1.1 init
 ```
 
 Review `rite.config.json` and `rite.adapter.mjs`, then commit the generated files

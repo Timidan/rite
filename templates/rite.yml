@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Rite verification
         run: >-
-          npx --yes @timidan/rite@0.1.0 verify
+          npx --yes @timidan/rite@0.1.1 verify
           --config rite.config.json
           --out rite-report.json
 
@@ -40,4 +40,4 @@ jobs:
 
       - name: Write job summary
         if: always() && hashFiles('rite-report.json') != ''
-        run: npx --yes @timidan/rite@0.1.0 report rite-report.json >> "$GITHUB_STEP_SUMMARY"
+        run: npx --yes @timidan/rite@0.1.1 report rite-report.json >> "$GITHUB_STEP_SUMMARY"

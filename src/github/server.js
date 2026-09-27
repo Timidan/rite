@@ -26,29 +26,32 @@
  *   RITE_SESSION_SECRET, RITE_PUBLIC_URL
  *
  * Optional:
+ *   RITE_SESSION_DIR (encrypted persistent sessions; memory-only when unset)
  *   PORT (default 3001)
  */
 
 import { randomBytes } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-let express, session, AdmZip, createAppAuth;
+let express, session, FileStore, AdmZip, createAppAuth;
 
 try {
   ({ default: express }     = await import('express'));
   ({ default: session }     = await import('express-session'));
+  const { default: createFileStore } = await import('session-file-store');
+  FileStore = createFileStore(session);
   ({ default: AdmZip }      = await import('adm-zip'));
   ({ createAppAuth }        = await import('@octokit/auth-app'));
 } catch (e) {
   throw new Error(
-    `Missing server dependencies. Run: npm install express express-session adm-zip @octokit/auth-app\n${e.message}`
+    `Missing server dependencies. Run: npm install\n${e.message}`
   );
 }
 
 import { checkEnv, buildAuthUrl, buildInstallUrl, exchangeCode, listAuthorizedRepos } from './app.js';
-import { SCHEMA_VERSION } from '../core/engine.js';
+import { ENGINE_VERSION, SCHEMA_VERSION } from '../core/engine.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -60,6 +63,22 @@ function requireEnv(name) {
   const val = process.env[name];
   if (!val) throw new Error(`Required env var not set: ${name}`);
   return val;
+}
+
+export function createSessionStore(path, secret) {
+  mkdirSync(path, { recursive: true, mode: 0o700 });
+  chmodSync(path, 0o700);
+  return new FileStore({
+    path,
+    secret,
+    ttl: 8 * 60 * 60,
+    retries: 1,
+    logFn: message => process.stderr.write(`rite-session: ${message}\n`),
+  });
+}
+
+export function riteWorkflowRunsUrl(fullName) {
+  return `https://api.github.com/repos/${fullName}/actions/workflows/rite.yml/runs?per_page=20`;
 }
 
 // ------------------------------------------------------------------ //
@@ -101,7 +120,7 @@ async function fetchAndValidateReport(installationToken, fullName, runId, expect
     Authorization: `Bearer ${installationToken}`,
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'rite-app/0.1.0',
+    'User-Agent': `rite-app/${ENGINE_VERSION}`,
   };
 
   // 1. List artifacts
@@ -123,7 +142,7 @@ async function fetchAndValidateReport(installationToken, fullName, runId, expect
 
   // 2. Download the artifact zip (GitHub redirects to a signed URL)
   const dlResp = await fetch(artifact.archive_download_url, {
-    headers: { Authorization: `Bearer ${installationToken}`, 'User-Agent': 'rite-app/0.1.0' },
+    headers: { Authorization: `Bearer ${installationToken}`, 'User-Agent': `rite-app/${ENGINE_VERSION}` },
     redirect: 'follow',
   });
   if (!dlResp.ok) {
@@ -171,10 +190,6 @@ export function validateReportBinding(report, expectedSha) {
   return { valid: true, report };
 }
 
-export function hasRiteWorkflow(workflows) {
-  return workflows.some(workflow => workflow.path === '.github/workflows/rite.yml');
-}
-
 // ------------------------------------------------------------------ //
 // Express app                                                          //
 // ------------------------------------------------------------------ //
@@ -193,9 +208,12 @@ export async function startGitHubServer({ port = 3001 } = {}) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
-  // Session — secret from env, never hardcoded
+  // Session — optionally encrypted on disk, with the secret kept outside source.
+  const sessionSecret = requireEnv('RITE_SESSION_SECRET');
+  const sessionDir = process.env.RITE_SESSION_DIR;
   app.use(session({
-    secret: requireEnv('RITE_SESSION_SECRET'),
+    ...(sessionDir ? { store: createSessionStore(sessionDir, sessionSecret) } : {}),
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -210,8 +228,9 @@ export async function startGitHubServer({ port = 3001 } = {}) {
   app.get('/api/health', (req, res) => {
     res.json({
       name: 'Rite GitHub server',
-      version: '0.1.0',
+      version: ENGINE_VERSION,
       authed: !!req.session.userToken,
+      sessionStore: sessionDir ? 'persistent' : 'memory',
       env: checkEnv(),
     });
   });
@@ -245,24 +264,28 @@ export async function startGitHubServer({ port = 3001 } = {}) {
 
     try {
       const { token } = await exchangeCode(String(code));
-      req.session.userToken = token;
 
-      // Fetch user identity to store in session
+      // Fetch identity before rotating away from the pre-authentication session.
       const userResp = await fetch('https://api.github.com/user', {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
-          'User-Agent': 'rite-app/0.1.0',
+          'User-Agent': `rite-app/${ENGINE_VERSION}`,
         },
       });
+      let user = null;
       if (userResp.ok) {
-        const user = await userResp.json();
+        user = await userResp.json();
+      }
+
+      await new Promise((resolve, reject) => req.session.regenerate(error => error ? reject(error) : resolve()));
+      req.session.userToken = token;
+      if (user) {
         req.session.githubLogin = user.login;
         req.session.githubAvatarUrl = user.avatar_url;
       }
-
-      // Redirect back to the app
+      await new Promise((resolve, reject) => req.session.save(error => error ? reject(error) : resolve()));
       res.redirect(`${process.env.RITE_PUBLIC_URL ?? ''}/#github-connected`);
     } catch (e) {
       res.status(500).json({ error: `OAuth exchange failed: ${e.message}` });
@@ -307,12 +330,12 @@ export async function startGitHubServer({ port = 3001 } = {}) {
         Authorization: `Bearer ${req.session.userToken}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'rite-app/0.1.0',
+        'User-Agent': `rite-app/${ENGINE_VERSION}`,
       };
-      const [runsResp, workflowsResp] = await Promise.all([
-        fetch(`https://api.github.com/repos/${fullName}/actions/runs?per_page=20`, { headers }),
-        fetch(`https://api.github.com/repos/${fullName}/actions/workflows?per_page=100`, { headers }),
-      ]);
+      const runsResp = await fetch(riteWorkflowRunsUrl(String(fullName)), { headers });
+      if (runsResp.status === 404) {
+        return res.json({ runs: [], workflowInstalled: false });
+      }
       if (!runsResp.ok) {
         return res.status(502).json({ error: `GitHub runs API: ${runsResp.status}` });
       }
@@ -326,12 +349,7 @@ export async function startGitHubServer({ port = 3001 } = {}) {
         htmlUrl: r.html_url,
         name: r.name,
       }));
-      let workflowInstalled = null;
-      if (workflowsResp.ok) {
-        const workflows = await workflowsResp.json();
-        workflowInstalled = hasRiteWorkflow(workflows.workflows ?? []);
-      }
-      res.json({ runs, workflowInstalled });
+      res.json({ runs, workflowInstalled: true });
     } catch (e) {
       res.status(502).json({ error: `GitHub API error: ${e.message}` });
     }
@@ -366,7 +384,7 @@ export async function startGitHubServer({ port = 3001 } = {}) {
             Authorization: `Bearer ${installToken}`,
             Accept: 'application/vnd.github+json',
             'X-GitHub-Api-Version': '2022-11-28',
-            'User-Agent': 'rite-app/0.1.0',
+            'User-Agent': `rite-app/${ENGINE_VERSION}`,
           },
         }
       );

@@ -16,7 +16,7 @@ describe('rite init', () => {
     assert.match(readFileSync(join(target, 'rite.adapter.mjs'), 'utf8'), /export async function runCase/);
     assert.match(
       readFileSync(join(target, '.github', 'workflows', 'rite.yml'), 'utf8'),
-      /npx --yes @timidan\/rite@0\.1\.0 verify/
+      /npx --yes @timidan\/rite@0\.1\.1 verify/
     );
   });
 });

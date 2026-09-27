@@ -35,7 +35,7 @@ SHA-bound Rite reports produced by installed repositories.
 - The sample uses synthetic in-memory orders and refund events; no money moves.
 - External repositories run `rite init`, then review and commit the generated config, adapter, and workflow.
 - The GitHub App has read-only Actions and metadata access and reads existing reports.
-- GitHub sessions are single-process and expire when the server restarts.
+- Production GitHub sessions are encrypted on disk when `RITE_SESSION_DIR` is configured.
 - watsonx.ai drafting exists but has not been verified with live credentials.
 
 ## Brand Commitments

@@ -25,6 +25,7 @@
  *   GITHUB_APP_CLIENT_SECRET
  *   GITHUB_APP_PRIVATE_KEY or GITHUB_APP_PRIVATE_KEY_FILE
  *   RITE_SESSION_SECRET    — Random 32+ char string for session signing
+ *   RITE_SESSION_DIR       — Optional encrypted session directory
  *   RITE_PUBLIC_URL        — e.g. https://rite.timidan.xyz (for OAuth callback)
  *
  * Register the App and set the environment variables above before starting

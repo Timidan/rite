@@ -1,6 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasRiteWorkflow, validateReportBinding } from '../src/github/server.js';
+import { mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createSessionStore, riteWorkflowRunsUrl, validateReportBinding } from '../src/github/server.js';
 import { buildInstallUrl, checkEnv } from '../src/github/app.js';
 
 const sha = 'a'.repeat(40);
@@ -40,7 +43,30 @@ it('preserves CSRF state through the GitHub installation URL', () => {
   assert.equal(url.searchParams.get('state'), 'state with spaces');
 });
 
-it('recognizes only the generated Rite workflow path', () => {
-  assert.equal(hasRiteWorkflow([{ path: '.github/workflows/rite.yml' }]), true);
-  assert.equal(hasRiteWorkflow([{ path: '.github/workflows/tests.yml' }]), false);
+it('requests runs only from the Rite workflow', () => {
+  assert.equal(
+    riteWorkflowRunsUrl('Timidan/cuebound'),
+    'https://api.github.com/repos/Timidan/cuebound/actions/workflows/rite.yml/runs?per_page=20'
+  );
+});
+
+it('persists encrypted sessions across store instances', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'rite-sessions-'));
+  const id = 'session-id';
+  const secret = 'test-secret-that-is-long-enough';
+  const token = 'github-token-must-not-appear-on-disk';
+  const set = (store, value) => new Promise((resolve, reject) =>
+    store.set(id, value, error => error ? reject(error) : resolve())
+  );
+  const get = store => new Promise((resolve, reject) =>
+    store.get(id, (error, value) => error ? reject(error) : resolve(value))
+  );
+  try {
+    await set(createSessionStore(dir, secret), { cookie: {}, userToken: token });
+    assert.equal(statSync(dir).mode & 0o777, 0o700);
+    assert.equal(readFileSync(join(dir, `${id}.json`), 'utf8').includes(token), false);
+    assert.equal((await get(createSessionStore(dir, secret))).userToken, token);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

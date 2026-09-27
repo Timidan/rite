@@ -522,7 +522,7 @@ function GitHubEvidence({ gh, refreshing, refresh }) {
 
       <p className="lede">
         Reads SHA-bound Rite reports from repositories that already run a Rite workflow.
-        Sessions end when the server restarts.
+        Rite never writes to the connected repository.
       </p>
 
       {connected && gh.repos.length > 0 && (
@@ -565,7 +565,7 @@ function GitHubEvidence({ gh, refreshing, refresh }) {
       {repo && !busy && runs.length === 0 && !shownError && workflowInstalled === false && (
         <div className="github-empty">
           <strong>Rite is not initialized in this repository.</strong>
-          <pre className="pre-block"><code>npx --yes @timidan/rite@0.1.0 init</code></pre>
+          <pre className="pre-block"><code>npx --yes @timidan/rite@0.1.1 init</code></pre>
           <p>Review the generated rule and adapter, then commit and push. The first workflow run will appear here.</p>
         </div>
       )}
@@ -601,7 +601,7 @@ function Setup() {
       </div>
       <ol className="steps">
         <li>
-          <span>Run <code>npx --yes @timidan/rite@0.1.0 init</code> in your repository. It creates the Rite
+          <span>Run <code>npx --yes @timidan/rite@0.1.1 init</code> in your repository. It creates the Rite
           config, adapter, and GitHub workflow.</span>
         </li>
         <li>
@@ -631,8 +631,8 @@ function LocalTools() {
         <article className="tool-card">
           <span className="tag">CLI</span>
           <h3>Create a target, then verify it</h3>
-          <pre className="pre-block"><code>{`npx --yes @timidan/rite@0.1.0 init
-npx --yes @timidan/rite@0.1.0 verify \\
+          <pre className="pre-block"><code>{`npx --yes @timidan/rite@0.1.1 init
+npx --yes @timidan/rite@0.1.1 verify \\
   --config rite.config.json \\
   --out rite-report.json --sarif rite-report.sarif`}</code></pre>
           <p className="note">Edit the generated <code>rite.config.json</code> and <code>rite.adapter.mjs</code> before running verify.</p>
@@ -644,7 +644,7 @@ npx --yes @timidan/rite@0.1.0 verify \\
   "mcpServers": {
     "rite": {
       "command": "npx",
-      "args": ["--yes", "@timidan/rite@0.1.0", "mcp"]
+      "args": ["--yes", "@timidan/rite@0.1.1", "mcp"]
     }
   }
 }`}</code></pre>
