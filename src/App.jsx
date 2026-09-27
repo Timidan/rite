@@ -32,7 +32,7 @@ function laneState(entry, lastRun) {
 function Instrument({ lastRun, verdict, pulse }) {
   const lanes = ENTRIES.map(entry => ({ entry, ...laneState(entry, lastRun) }));
   return (
-    <figure className="scope" data-tone={verdict.tone} aria-label="Sample: two mapped paths, one shared gate">
+    <figure className="scope hero-rise" data-tone={verdict.tone}>
       <p className="scope-rule">
         <span className="tag">Rule</span>
         A refund needs an owner, a paid order, and no earlier refund.
@@ -72,6 +72,11 @@ function Instrument({ lastRun, verdict, pulse }) {
           </span>
         </div>
       </div>
+      <figcaption className="scope-note">
+        Sample: a synthetic refund service with two mapped paths,{' '}
+        <code>customerRefund</code> and <code>supportRefund</code>. Checks run in this browser.
+        Unmapped paths are not checked.
+      </figcaption>
     </figure>
   );
 }
@@ -205,7 +210,7 @@ function CaseDetail({ selectedKey, lastRun }) {
   const result = lastRun?.data?.results?.find(r => r.id === selectedKey) ?? null;
 
   return (
-    <section id="case-detail" className="case-detail" aria-labelledby="case-detail-heading">
+    <section id="case-detail" className="case-detail" aria-labelledby="case-detail-heading" tabIndex={0}>
       <h2 id="case-detail-heading" className="sr-only">Case detail</h2>
       {!result ? (
         <p className="detail-empty">Select a result to compare expected and observed effects.</p>
@@ -258,13 +263,18 @@ function PhaseBlock({ phase }) {
         {phase.signal ? ` · signal: ${phase.signal}` : ''}
         {phase.processError ? ` · error: ${phase.processError}` : ''}
       </div>
-      {phase.witnesses?.length > 0 && (
-        <div className="phase-meta">witnesses: {phase.witnesses.join(', ')}</div>
-      )}
       <div className="phase-meta">sourceHash: {phase.sourceHash ?? 'n/a'}</div>
     </li>
   );
 }
+
+// What each recorded phase changes and what it must show. Matches the README evidence table.
+const PROOF_STEPS = [
+  { id: 'baseline', title: 'Baseline', change: 'The support path skips the ownership check.', expect: <><code>wrong-owner:support</code> fails and records the unauthorized refund.</> },
+  { id: 'fixed', title: 'Fixed', change: 'Both paths route through one shared guard.', expect: 'All 10 mapped checks pass.' },
+  { id: 'mutation', title: 'Mutation', change: 'The ownership guard is removed from the shared gate.', expect: 'Both wrong-owner cases fail.' },
+  { id: 'restored', title: 'Restored', change: 'The exact fixed source is put back.', expect: 'All 10 checks pass again.' },
+];
 
 function RecordedProof() {
   const [proofState, setProofState] = useState('idle'); // idle|loading|missing|invalid|error|ready
@@ -286,6 +296,7 @@ function RecordedProof() {
       if (typeof phase.command !== 'string') return false;
       if (phase.exitCode !== null && typeof phase.exitCode !== 'number') return false;
       if (typeof phase.expectationMet !== 'boolean') return false;
+      if (!['PASS', 'FAIL', 'ERROR'].includes(phase.resultStatus)) return false;
     }
     return true;
   }
@@ -321,21 +332,52 @@ function RecordedProof() {
     }
   }
 
-  function handleToggle(e) {
-    if (e.target.open && proofState === 'idle') {
-      loadProof();
-    }
-  }
+  useEffect(() => { loadProof(); }, []);
 
   return (
-    <details className="recorded-proof" id="proof" onToggle={handleToggle}>
-      <summary>
-        <span className="summary-title">Recorded proof</span>
-        <span className="summary-note">Four CLI phases captured while building this sample. Not re-run here.</span>
-      </summary>
-      <div className="recorded-proof-body">
-        {proofState === 'idle' && <p className="muted">Open to load the recorded proof file.</p>}
-        {proofState === 'loading' && <p className="muted">Loading…</p>}
+    <section className="panel recorded-proof" id="proof" aria-labelledby="proof-heading">
+      <div className="panel-head">
+        <h2 id="proof-heading">Mutation proof</h2>
+        {proofState === 'error' && (
+          <button className="btn btn-secondary" onClick={loadProof}>Retry loading</button>
+        )}
+      </div>
+      <p className="lede">
+        A check only counts if it catches the defect it claims to cover. These four CLI phases were
+        recorded while building this sample. They are not re-run here.
+      </p>
+
+      <ol className="timeline">
+        {PROOF_STEPS.map((step, i) => {
+          const recorded = proofState === 'ready' ? proof.phases.find(p => p.id === step.id) : null;
+          const tone = !recorded ? 'idle' : recorded.resultStatus === 'PASS' ? 'pass' : 'fail';
+          return (
+            <li className="step" data-tone={tone} key={step.id} style={{ '--i': i }}>
+              <span className="tag">{i + 1}. {step.title}</span>
+              <p className="step-change">{step.change}</p>
+              <p className="step-expect"><span className="step-key">Expected</span> {step.expect}</p>
+              <div className="step-recorded">
+                <span className="step-key">Recorded</span>
+                {recorded ? (
+                  <span className="step-result">
+                    <Status status={recorded.resultStatus} />
+                    <span className={recorded.expectationMet ? 'muted' : 'phase-unmet'}>
+                      {recorded.expectationMet ? 'as expected' : 'not as expected'}
+                    </span>
+                  </span>
+                ) : (
+                  <span className="muted">{proofState === 'loading' || proofState === 'idle' ? 'Loading…' : 'Unavailable'}</span>
+                )}
+              </div>
+              {Array.isArray(recorded?.witnesses) && recorded.witnesses.length > 0 && (
+                <p className="phase-meta">witnesses: {recorded.witnesses.join(', ')}</p>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="recorded-proof-body" role="status">
         {proofState === 'missing' && (
           <p className="muted">No recorded proof file in this build. Current checks still run live.</p>
         )}
@@ -345,9 +387,12 @@ function RecordedProof() {
         {proofState === 'error' && (
           <p className="muted">Could not load recorded proof: {proofMsg}. Current checks still run live.</p>
         )}
+      </div>
 
-        {proofState === 'ready' && proof && (
-          <>
+      {proofState === 'ready' && proof && (
+        <details className="proof-raw">
+          <summary>Commands, exit codes, and hashes</summary>
+          <div className="proof-raw-body">
             <div className="proof-overall">
               <strong>Overall</strong>
               <Status status={proof.status} />
@@ -365,16 +410,16 @@ function RecordedProof() {
                 <PhaseBlock key={phase.id} phase={phase} />
               ))}
             </ol>
-          </>
-        )}
+          </div>
+        </details>
+      )}
 
-        <p className="proof-how">
-          <strong>How this was made:</strong> in Bob IDE, trace both entry paths, write black-box
-          behavior checks, fix at the shared enforcement point, remove the ownership check and
-          watch checks fail, then restore it and watch them pass.
-        </p>
-      </div>
-    </details>
+      <p className="proof-how">
+        <strong>How this was made:</strong> in IBM Bob, trace both entry paths, write black-box
+        behavior checks, fix at the shared enforcement point, remove the ownership check and
+        watch checks fail, then restore it and watch them pass.
+      </p>
+    </section>
   );
 }
 
@@ -540,7 +585,7 @@ function GitHubEvidence({ gh, refreshing, refresh }) {
           <strong>No repositories installed.</strong>
           <p>OAuth connected your identity. Install Rite on the repositories you want to inspect, then return and press Refresh.</p>
           <a className="btn" href={GITHUB_INSTALL_URL} target="_blank" rel="noreferrer">
-            Install / choose repositories
+            Install / choose repositories<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
       )}
@@ -553,7 +598,7 @@ function GitHubEvidence({ gh, refreshing, refresh }) {
             <li className="github-run" key={run.runId}>
               <span>
                 <strong>{run.name}</strong>
-                <span className="meta">{run.headSha.slice(0, 7)} · {run.conclusion ?? run.status}</span>
+                <span className="meta">{run.headSha?.slice(0, 7) ?? 'no sha'} · {run.conclusion ?? run.status}</span>
               </span>
               <button className="btn btn-small btn-secondary" onClick={() => loadReport(run.runId)} disabled={working}>
                 Read report
@@ -581,7 +626,7 @@ function GitHubEvidence({ gh, refreshing, refresh }) {
           <Status status={report.status} />
           <strong>{report.rule}</strong>
           <span className="meta">
-            {report.results.filter(item => item.status === 'PASS').length}/{report.results.length} checks passed · {report.commitSha.slice(0, 7)}
+            {report.results?.filter(item => item.status === 'PASS').length ?? 0}/{report.results?.length ?? 0} checks passed · {report.commitSha?.slice(0, 7) ?? 'no sha'}
           </span>
         </div>
       )}
@@ -609,12 +654,14 @@ function Setup() {
           <code>rite-report.json</code>.</span>
         </li>
         <li>
-          <span><a href={GITHUB_INSTALL_URL} target="_blank" rel="noreferrer">Install the GitHub App</a> on
+          <span><a href={GITHUB_INSTALL_URL} target="_blank" rel="noreferrer">Install the GitHub App<span className="sr-only"> (opens in a new tab)</span></a> on
           that repository, return here, press Refresh, and select it under <a href="#github-evidence">Repository evidence</a>.</span>
         </li>
       </ol>
       <p className="note">
-        Rite never writes to your repository. You review and commit the generated files.
+        The app asks for read-only Actions and Metadata access. It reads the report artifact and
+        shows it only if the report's commit matches the run's head SHA. Rite never writes to your
+        repository; you review and commit the generated files.
       </p>
     </section>
   );
@@ -631,16 +678,21 @@ function LocalTools() {
         <article className="tool-card">
           <span className="tag">CLI</span>
           <h3>Create a target, then verify it</h3>
-          <pre className="pre-block"><code>{`npx --yes @timidan/rite@0.1.1 init
+          <pre className="pre-block" tabIndex={0}><code>{`npx --yes @timidan/rite@0.1.1 init
 npx --yes @timidan/rite@0.1.1 verify \\
   --config rite.config.json \\
-  --out rite-report.json --sarif rite-report.sarif`}</code></pre>
-          <p className="note">Edit the generated <code>rite.config.json</code> and <code>rite.adapter.mjs</code> before running verify.</p>
+  --out rite-report.json --sarif rite-report.sarif
+npx --yes @timidan/rite@0.1.1 report rite-report.json`}</code></pre>
+          <p className="note">
+            Edit the generated <code>rite.config.json</code> and <code>rite.adapter.mjs</code> before
+            running verify. Exit codes: <code>0</code> PASS, <code>1</code> FAIL, <code>2</code> ERROR,{' '}
+            <code>3</code> usage error.
+          </p>
         </article>
         <article className="tool-card">
           <span className="tag">MCP</span>
           <h3>Expose Rite to an MCP client</h3>
-          <pre className="pre-block"><code>{`{
+          <pre className="pre-block" tabIndex={0}><code>{`{
   "mcpServers": {
     "rite": {
       "command": "npx",
@@ -648,7 +700,11 @@ npx --yes @timidan/rite@0.1.1 verify \\
     }
   }
 }`}</code></pre>
-          <p className="note">Provides <code>rite_analyze</code>, <code>rite_verify</code>, and <code>rite_report</code>.</p>
+          <dl className="tool-list">
+            <div><dt><code>rite_analyze</code></dt><dd>Read a config: rule, mapped paths, case summary. Input: <code>config</code></dd></div>
+            <div><dt><code>rite_verify</code></dt><dd>Run the checks with the CLI's engine; returns the report. Input: <code>config</code>, optional <code>out</code></dd></div>
+            <div><dt><code>rite_report</code></dt><dd>Render a saved report. Input: <code>file</code></dd></div>
+          </dl>
         </article>
       </div>
     </section>
@@ -763,6 +819,7 @@ export default function App() {
         </a>
         <nav className="nav" aria-label="Sections">
           <a href="#sample">Checks</a>
+          <a href="#proof">Proof</a>
           <a href="#github-evidence">Repository</a>
           <a href="#setup">Setup</a>
         </nav>
@@ -771,12 +828,14 @@ export default function App() {
       <main id="top">
         <section className="hero" aria-labelledby="hero-heading">
           <div className="hero-copy">
-            <h1 id="hero-heading">One rule. Every mapped path.</h1>
-            <p className="lead">
-              Black-box checks that each path you map to a sensitive operation enforces the same
-              authorization rule.
+            <p className="eyebrow hero-rise">Authorization checks</p>
+            <h1 id="hero-heading" className="hero-rise">
+              One rule. <span className="h1-line">Every mapped path.</span>
+            </h1>
+            <p className="lead hero-rise">
+              Black-box checks that every path you map to a sensitive operation enforces the same rule.
             </p>
-            <div className="actions">
+            <div className="actions hero-rise">
               <button
                 className="btn"
                 onClick={handleRunAll}
@@ -787,10 +846,6 @@ export default function App() {
               </button>
               <GitHubStatus gh={gh} />
             </div>
-            <p className="scope-note">
-              Only mapped paths are checked. The sample is a synthetic refund service that covers{' '}
-              <code>customerRefund</code> and <code>supportRefund</code> and runs in this browser.
-            </p>
           </div>
 
           <Instrument lastRun={lastRun} verdict={verdict} pulse={pulse} />
@@ -844,8 +899,9 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        Rite is a sample built for the IBM Bob 2.0 Hackathon 2026. It does not analyze other
-        repositories and implies no endorsement.
+        Built with IBM Bob for the IBM Bob 2.0 Hackathon 2026. Not affiliated with or endorsed by
+        IBM. Rite reads the reports a repository's own workflow produces; it does not analyze that
+        repository's code.
       </footer>
     </>
   );
