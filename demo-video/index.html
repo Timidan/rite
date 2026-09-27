@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --paper: #faf8f3; --panel: #fffefb; --ink: #1c1f26; --muted: #4f5562;
+        --line: #d8d2c4; --cobalt: #1f3ff0; --cobalt-deep: #1630c4;
+        --cobalt-tint: #e6ebff; --white: #ffffff;
+        --sans: Ubuntu, Cantarell, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      * { box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: var(--paper); color: var(--ink); font-family: var(--sans); }
+      .clip, #root { width: 1920px; height: 1080px; }
+      #root { position: relative; overflow: hidden; background: var(--paper); }
+      .scene { position: absolute; inset: 0; width: 1920px; height: 1080px; background-color: var(--paper); }
+      #scene-1 { z-index: 1; }
+      #scene-2, #scene-3, #scene-4, #scene-5 { z-index: 2; opacity: 0; }
+      .scene-content { position: relative; z-index: 3; display: flex; flex-direction: column; width: 100%; height: 100%; padding: 92px 112px 88px; gap: 34px; }
+      .calibration-h, .calibration-v { position: absolute; z-index: 1; background: var(--line); opacity: 0.72; }
+      .calibration-h { left: 0; right: 0; height: 1px; }
+      .calibration-v { top: 0; bottom: 0; width: 1px; }
+      .h-top { top: 62px; } .h-bottom { bottom: 58px; } .v-left { left: 72px; } .v-right { right: 72px; }
+      .corner-code { position: absolute; z-index: 2; right: 95px; bottom: 25px; color: var(--muted); font: 700 16px/1 var(--mono); letter-spacing: 0.08em; }
+      .topline { display: flex; align-items: center; justify-content: space-between; min-height: 52px; }
+      .brand { display: inline-flex; align-items: center; gap: 17px; font-size: 30px; font-weight: 800; letter-spacing: -0.035em; }
+      .brand-mark { display: grid; place-items: center; width: 48px; height: 48px; border: 3px solid var(--ink); color: var(--cobalt); font-size: 30px; font-weight: 900; line-height: 1; }
+      .eyebrow, .measure-label, .status-label { color: var(--muted); font: 750 18px/1.2 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; }
+      .eyebrow { letter-spacing: 0.05em; text-transform: none; }
+      .measure-label { color: var(--cobalt-deep); }
+      .hero-layout { display: grid; grid-template-columns: minmax(0, 1fr) 430px; align-items: end; flex: 1; gap: 92px; }
+      .hero-copy { max-width: 1320px; font-size: 118px; font-weight: 800; line-height: 0.98; letter-spacing: -0.04em; }
+      .hero-copy .signal, .closing-title .signal { color: var(--cobalt); }
+      .hero-meter { display: flex; flex-direction: column; gap: 18px; padding: 26px; border: 2px solid var(--ink); background: var(--panel); }
+      .meter-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 0 14px; border-bottom: 1px solid var(--line); }
+      .meter-row:last-child { padding-bottom: 10px; border-bottom: 0; }
+      .meter-name { color: var(--muted); font: 700 18px/1 var(--mono); }
+      .meter-state { display: inline-flex; align-items: center; gap: 9px; font-size: 18px; font-weight: 800; }
+      .signal-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--cobalt); }
+      .capabilities { display: flex; align-items: center; gap: 12px; }
+      .capability { padding: 12px 17px; border: 1px solid var(--ink); background: var(--panel); font-size: 18px; font-weight: 750; }
+      .scene-heading { max-width: 1160px; font-size: 82px; font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+      .scene-subheading { max-width: 870px; color: var(--muted); font-size: 24px; font-weight: 450; line-height: 1.42; }
+      .instrument { display: grid; grid-template-columns: 340px 220px 370px 220px 340px; grid-template-rows: 152px 152px; align-items: center; margin-top: 30px; padding: 42px 48px; border: 2px solid var(--ink); background: var(--panel); box-shadow: 0 2px 0 var(--ink); }
+      .node { display: flex; flex-direction: column; justify-content: center; min-height: 110px; padding: 20px 24px; border: 1px solid var(--ink); background: var(--paper); }
+      .node code, .gate code, .sink code { font: 700 24px/1.2 var(--mono); font-variant-ligatures: none; }
+      .node small, .gate small, .sink small { margin-top: 11px; color: var(--muted); font-size: 18px; font-weight: 650; }
+      .node-a { grid-column: 1; grid-row: 1; } .node-b { grid-column: 1; grid-row: 2; }
+      .wire { position: relative; height: 4px; overflow: visible; background: var(--line); }
+      .wire-a { grid-column: 2; grid-row: 1; } .wire-b { grid-column: 2; grid-row: 2; } .wire-out { grid-column: 4; grid-row: 1 / span 2; }
+      .wire-fill { width: 100%; height: 100%; background: var(--cobalt); transform-origin: left center; }
+      .pulse { position: absolute; top: -6px; left: -8px; width: 16px; height: 16px; border: 3px solid var(--cobalt); border-radius: 2px; background: var(--white); }
+      .gate { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; justify-content: center; min-height: 182px; padding: 30px; border: 3px solid var(--cobalt); background: var(--cobalt-tint); }
+      .sink { grid-column: 5; grid-row: 1 / span 2; display: flex; flex-direction: column; justify-content: center; min-height: 182px; padding: 30px; border: 2px solid var(--ink); background: var(--ink); color: var(--white); }
+      .sink small, .sink .status-label { color: #d9dce4; }
+      .proof-strip { display: flex; gap: 12px; margin-left: auto; }
+      .proof-chip { padding: 10px 14px; border: 1px solid var(--line); color: var(--muted); font: 700 16px/1 var(--mono); }
+      .verify-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; flex: 1; align-items: center; gap: 46px; }
+      .terminal { min-height: 540px; overflow: hidden; border: 2px solid var(--ink); background: var(--ink); color: var(--white); }
+      .terminal-bar { display: flex; align-items: center; justify-content: space-between; height: 58px; padding: 10px 24px; border-bottom: 1px solid #444851; color: #d9dce4; font: 700 16px/1 var(--mono); }
+      .terminal-body { display: flex; flex-direction: column; gap: 23px; padding: 39px 42px; font: 500 20px/1.5 var(--mono); font-variant-ligatures: none; }
+      .prompt { color: #96a7ff; } .terminal-muted { color: #b9beca; } .terminal-pass { color: #a9b6ff; font-weight: 800; }
+      .verify-summary { display: flex; flex-direction: column; gap: 18px; }
+      .verdict-box { padding: 34px; border: 3px solid var(--cobalt); background: var(--cobalt-tint); }
+      .verdict { margin-top: 11px; color: var(--cobalt); font-size: 92px; font-weight: 850; line-height: 0.95; letter-spacing: -0.05em; }
+      .count { margin-top: 17px; color: var(--ink); font: 750 24px/1 var(--mono); font-variant-numeric: tabular-nums; }
+      .summary-row { padding: 22px 24px; border: 1px solid var(--ink); background: var(--panel); }
+      .summary-row strong { display: block; margin-bottom: 8px; font-size: 20px; }
+      .summary-row span { color: var(--muted); font: 600 18px/1.35 var(--mono); }
+      .github-layout { display: grid; grid-template-columns: 0.62fr 1.38fr; flex: 1; align-items: center; gap: 58px; }
+      .github-copy { display: flex; flex-direction: column; gap: 24px; }
+      .privacy-note { display: flex; align-items: center; gap: 13px; color: var(--cobalt-deep); font-size: 20px; font-weight: 800; }
+      .repo-panel { overflow: hidden; border: 2px solid var(--ink); background: var(--panel); box-shadow: 0 2px 0 var(--ink); }
+      .repo-header { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px; border-bottom: 1px solid var(--line); }
+      .repo-title { font-size: 24px; font-weight: 800; }
+      .connected { display: inline-flex; align-items: center; gap: 9px; color: var(--cobalt-deep); font-size: 18px; font-weight: 800; }
+      .repo-select { margin: 26px 28px 22px; padding: 18px 20px; border: 1px solid var(--ink); background: var(--paper); font: 700 20px/1 var(--mono); }
+      .run-card { display: grid; grid-template-columns: 125px 1fr 210px; align-items: center; margin: 0 28px 28px; min-height: 160px; border: 2px solid var(--cobalt); background: var(--cobalt-tint); }
+      .run-status { display: grid; place-items: center; align-self: stretch; background: var(--cobalt); color: var(--white); font-size: 24px; font-weight: 850; }
+      .run-detail { display: flex; flex-direction: column; gap: 10px; padding: 24px 30px; }
+      .run-detail strong { font-size: 24px; } .run-detail code { color: var(--muted); font: 650 18px/1.35 var(--mono); }
+      .binding { padding: 22px; border-left: 1px solid #aebaff; }
+      .binding strong { display: block; margin-top: 8px; color: var(--cobalt-deep); font-size: 20px; }
+      .binding code { display: block; margin-top: 8px; color: var(--muted); font: 650 16px/1 var(--mono); }
+      .surfaces-layout { display: grid; grid-template-columns: 1fr 1.2fr; flex: 1; align-items: center; gap: 100px; }
+      .closing-copy { display: flex; flex-direction: column; gap: 28px; }
+      .closing-title { max-width: 780px; font-size: 92px; font-weight: 850; line-height: 0.98; letter-spacing: -0.04em; }
+      .url { align-self: flex-start; padding: 15px 19px; border: 2px solid var(--ink); background: var(--panel); font: 750 20px/1 var(--mono); }
+      .surface-list { display: flex; flex-direction: column; }
+      .surface-row { display: grid; grid-template-columns: 145px 1fr 60px; align-items: center; min-height: 140px; padding: 14px 0; border-bottom: 2px solid var(--ink); }
+      .surface-row:first-child { border-top: 2px solid var(--ink); }
+      .surface-index { color: var(--cobalt); font: 800 20px/1 var(--mono); }
+      .surface-name { font-size: 42px; font-weight: 800; letter-spacing: -0.03em; }
+      .surface-note { margin-top: 7px; color: var(--muted); font-size: 20px; }
+      .surface-arrow { color: var(--cobalt); font-size: 42px; font-weight: 500; }
+      .final-rule { width: 100%; height: 5px; background: var(--cobalt); transform-origin: left center; }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-r1dp" id="root" class="clip" data-composition-id="rite-demo" data-start="0" data-duration="43" data-width="1920" data-height="1080" data-track-index="0">
+      <section data-hf-id="hf-k674" id="scene-1" class="scene">
+        <div data-hf-id="hf-75pp" class="calibration-h h-top"></div><div data-hf-id="hf-keh1" class="calibration-h h-bottom"></div><div data-hf-id="hf-oikf" class="calibration-v v-left"></div><div data-hf-id="hf-ygoi" class="calibration-v v-right"></div><div data-hf-id="hf-ps2o" class="corner-code">RITE / 00</div>
+        <div data-hf-id="hf-cn5c" class="scene-content">
+          <div data-hf-id="hf-o5lv" class="topline"><div data-hf-id="hf-8clp" id="s1-brand" class="brand"><span data-hf-id="hf-hnmc" class="brand-mark">R</span><span data-hf-id="hf-easb">Rite</span></div><div data-hf-id="hf-offc" id="s1-eyebrow" class="eyebrow">Authorization path verification</div></div>
+          <div data-hf-id="hf-3khb" class="hero-layout">
+            <div data-hf-id="hf-e1k7" id="s1-title" class="hero-copy">Authorization checks for the paths <span data-hf-id="hf-67vw" class="signal">ordinary tests miss.</span></div>
+            <div data-hf-id="hf-741a" id="s1-meter" class="hero-meter">
+              <div data-hf-id="hf-8qwg" class="meter-row"><span data-hf-id="hf-jvnv" class="meter-name">mapped paths</span><span data-hf-id="hf-f3qk" class="meter-state"><i data-hf-id="hf-suwu" class="signal-dot"></i>observed</span></div>
+              <div data-hf-id="hf-093c" class="meter-row"><span data-hf-id="hf-zrkp" class="meter-name">side effects</span><span data-hf-id="hf-eefx" class="meter-state"><i data-hf-id="hf-bqea" class="signal-dot"></i>compared</span></div>
+              <div data-hf-id="hf-z269" class="meter-row"><span data-hf-id="hf-njtx" class="meter-name">commit</span><span data-hf-id="hf-g4ks" class="meter-state"><i data-hf-id="hf-c4pb" class="signal-dot"></i>bound</span></div>
+            </div>
+          </div>
+          <div data-hf-id="hf-847y" id="s1-caps" class="capabilities"><span data-hf-id="hf-fgr3" class="capability">CLI</span><span data-hf-id="hf-kprd" class="capability">MCP</span><span data-hf-id="hf-an7v" class="capability">GitHub App</span></div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-qzmg" id="scene-2" class="scene" data-layout-allow-overflow="">
+        <div data-hf-id="hf-cq5d" class="calibration-h h-top"></div><div data-hf-id="hf-61ll" class="calibration-h h-bottom"></div><div data-hf-id="hf-9la7" class="calibration-v v-left"></div><div data-hf-id="hf-ebau" class="calibration-v v-right"></div><div data-hf-id="hf-pdrn" class="corner-code">RITE / 01</div>
+        <div data-hf-id="hf-o0eg" class="scene-content">
+          <div data-hf-id="hf-pz6r" class="topline"><div data-hf-id="hf-amhl" id="s2-label" class="measure-label">01 / Map the real path</div><div data-hf-id="hf-yyr3" id="s2-proof" class="proof-strip"><span data-hf-id="hf-lmh2" class="proof-chip">2 entries</span><span data-hf-id="hf-bega" class="proof-chip">1 gate</span><span data-hf-id="hf-sgj0" class="proof-chip">1 effect</span></div></div>
+          <div data-hf-id="hf-9i9n" id="s2-title" class="scene-heading">Two entry points. One sensitive effect.</div>
+          <div data-hf-id="hf-mc58" id="s2-subtitle" class="scene-subheading">Rite traces each entry to the shared authorization gate, then measures the effect that actually occurred.</div>
+          <div data-hf-id="hf-qb8o" id="s2-instrument" class="instrument">
+            <div data-hf-id="hf-e6l2" id="node-a" class="node node-a"><code data-hf-id="hf-4vah">customerRefund()</code><small data-hf-id="hf-x1ob">customer path</small></div>
+            <div data-hf-id="hf-rw9v" id="wire-a" class="wire wire-a"><div data-hf-id="hf-jann" class="wire-fill"></div><i data-hf-id="hf-kpei" id="pulse-a" class="pulse"></i></div>
+            <div data-hf-id="hf-utje" id="node-b" class="node node-b"><code data-hf-id="hf-l9km">supportRefund()</code><small data-hf-id="hf-gv0q">support path</small></div>
+            <div data-hf-id="hf-q31f" id="wire-b" class="wire wire-b"><div data-hf-id="hf-wys3" class="wire-fill"></div><i data-hf-id="hf-grah" id="pulse-b" class="pulse"></i></div>
+            <div data-hf-id="hf-cmp2" id="gate" class="gate"><span data-hf-id="hf-p9pi" class="status-label">shared gate</span><code data-hf-id="hf-te6l">authorizeAndRefund()</code><small data-hf-id="hf-cf79">actor + ownership + order state</small></div>
+            <div data-hf-id="hf-2msb" id="wire-out" class="wire wire-out"><div data-hf-id="hf-wkh2" class="wire-fill"></div><i data-hf-id="hf-q7db" id="pulse-out" class="pulse"></i></div>
+            <div data-hf-id="hf-npci" id="sink" class="sink"><span data-hf-id="hf-we6b" class="status-label">observed effect</span><code data-hf-id="hf-3ke2">issueRefund()</code><small data-hf-id="hf-su1f">allowed: 1 event · denied: 0</small></div>
+          </div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-rra9" id="scene-3" class="scene" data-layout-allow-overflow="">
+        <div data-hf-id="hf-dx2g" class="calibration-h h-top"></div><div data-hf-id="hf-78io" class="calibration-h h-bottom"></div><div data-hf-id="hf-96z6" class="calibration-v v-left"></div><div data-hf-id="hf-eplv" class="calibration-v v-right"></div><div data-hf-id="hf-ozgm" class="corner-code">RITE / 02</div>
+        <div data-hf-id="hf-mthd" class="scene-content">
+          <div data-hf-id="hf-pkvq" class="topline"><div data-hf-id="hf-lrp0" id="s3-label" class="measure-label">02 / Verify</div><div data-hf-id="hf-7zlj" id="s3-meta" class="eyebrow">Deterministic local run</div></div>
+          <div data-hf-id="hf-1qug" class="verify-grid">
+            <div data-hf-id="hf-j01i" id="terminal" class="terminal">
+              <div data-hf-id="hf-b8ww" class="terminal-bar"><span data-hf-id="hf-4il8">rite — verify</span><span data-hf-id="hf-p4l2">local / node ≥ 20</span></div>
+              <div data-hf-id="hf-vv39" class="terminal-body">
+                <div data-hf-id="hf-ewjo" id="cmd-1"><span data-hf-id="hf-99ip" class="prompt">$</span> npx --yes @timidan/rite verify \</div>
+                <div data-hf-id="hf-s86k" id="cmd-2">&#160;&#160;--config rite.config.json \</div>
+                <div data-hf-id="hf-6h5j" id="cmd-3">&#160;&#160;--out rite-report.json --sarif rite-report.sarif</div>
+                <div data-hf-id="hf-jg7g" id="out-1" class="terminal-muted">→ loading rule refund-authorization</div>
+                <div data-hf-id="hf-q9kf" id="out-2" class="terminal-muted">→ executing mapped entry/case combinations</div>
+                <div data-hf-id="hf-nuxw" id="out-3" class="terminal-pass">✓ PASS&#160;&#160;10 / 10 checks</div>
+                <div data-hf-id="hf-1vr8" id="out-4" class="terminal-muted">report → rite-report.json</div>
+              </div>
+            </div>
+            <div data-hf-id="hf-mi6o" class="verify-summary">
+              <div data-hf-id="hf-bx3g" id="verdict" class="verdict-box"><span data-hf-id="hf-rrrk" class="status-label">aggregate verdict</span><div data-hf-id="hf-0shy" class="verdict">PASS</div><div data-hf-id="hf-7s33" class="count">10 / 10 checks</div></div>
+              <div data-hf-id="hf-1xc9" id="summary-1" class="summary-row"><strong data-hf-id="hf-w6hx">Effects compared</strong><span data-hf-id="hf-o68v">decision + emitted events</span></div>
+              <div data-hf-id="hf-5vga" id="summary-2" class="summary-row"><strong data-hf-id="hf-5ne2">Portable evidence</strong><span data-hf-id="hf-65h4">JSON report + SARIF output</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-j3ee" id="scene-4" class="scene" data-layout-allow-overflow="">
+        <div data-hf-id="hf-dirf" class="calibration-h h-top"></div><div data-hf-id="hf-6u7n" class="calibration-h h-bottom"></div><div data-hf-id="hf-8so5" class="calibration-v v-left"></div><div data-hf-id="hf-f3ww" class="calibration-v v-right"></div><div data-hf-id="hf-ol5l" class="corner-code">RITE / 03</div>
+        <div data-hf-id="hf-n7se" class="scene-content">
+          <div data-hf-id="hf-p6kp" class="topline"><div data-hf-id="hf-l1d7" id="s4-label" class="measure-label">03 / Read the evidence</div><div data-hf-id="hf-mber" id="s4-meta" class="eyebrow">GitHub App · read-only Actions + Metadata</div></div>
+          <div data-hf-id="hf-gnaw" class="github-layout">
+            <div data-hf-id="hf-r369" class="github-copy"><div data-hf-id="hf-zlq0" id="s4-title" class="scene-heading">The report must match the run.</div><div data-hf-id="hf-mru9" id="s4-subtitle" class="scene-subheading">Rite reads the workflow artifact, checks its commit SHA against GitHub’s run, and rejects a mismatch.</div><div data-hf-id="hf-c3az" id="s4-note" class="privacy-note"><i data-hf-id="hf-cj0c" class="signal-dot"></i>Rite never writes to the repository.</div></div>
+            <div data-hf-id="hf-bsu6" id="repo-panel" class="repo-panel">
+              <div data-hf-id="hf-66dq" class="repo-header"><span data-hf-id="hf-akep" class="repo-title">Repository evidence</span><span data-hf-id="hf-tg5d" class="connected"><i data-hf-id="hf-cxbd" class="signal-dot"></i>Connected as @Timidan</span></div>
+              <div data-hf-id="hf-4q84" id="repo-select" class="repo-select">Timidan/cuebound</div>
+              <div data-hf-id="hf-k48y" id="run-card" class="run-card"><div data-hf-id="hf-ulm7" class="run-status">PASS</div><div data-hf-id="hf-j4hf" class="run-detail"><strong data-hf-id="hf-2icb">Rite verification</strong><code data-hf-id="hf-px97">workflow completed · artifact verified</code><code data-hf-id="hf-mcf2">run 36234330975</code></div><div data-hf-id="hf-y7kb" class="binding"><span data-hf-id="hf-scsu" class="status-label">commit binding</span><strong data-hf-id="hf-0mnt">SHA MATCH</strong><code data-hf-id="hf-ey3t">eaae9ae</code></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-n1if" id="scene-5" class="scene" data-layout-allow-overflow="">
+        <div data-hf-id="hf-bj8a" class="calibration-h h-top"></div><div data-hf-id="hf-4uoi" class="calibration-h h-bottom"></div><div data-hf-id="hf-bktc" class="calibration-v v-left"></div><div data-hf-id="hf-cbrp" class="calibration-v v-right"></div><div data-hf-id="hf-b6f9" class="corner-code">RITE / END</div>
+        <div data-hf-id="hf-22oe" id="s5-content" class="scene-content">
+          <div data-hf-id="hf-os9o" class="topline"><div data-hf-id="hf-7h61" id="s5-brand" class="brand"><span data-hf-id="hf-ii24" class="brand-mark">R</span><span data-hf-id="hf-6xcr">Rite</span></div><div data-hf-id="hf-lien" id="s5-label" class="measure-label">Use it where you work</div></div>
+          <div data-hf-id="hf-rpy7" class="surfaces-layout">
+            <div data-hf-id="hf-ennd" class="closing-copy"><div data-hf-id="hf-515n" id="s5-title" class="closing-title">Prove the path. <span data-hf-id="hf-z18d" class="signal">Not just the function.</span></div><div data-hf-id="hf-5y6c" id="s5-url" class="url">rite.timidan.xyz</div></div>
+            <div data-hf-id="hf-jzoi" id="surface-list" class="surface-list">
+              <div data-hf-id="hf-1akr" id="surface-1" class="surface-row"><span data-hf-id="hf-3lx2" class="surface-index">01</span><div data-hf-id="hf-yeow"><div data-hf-id="hf-knp3" class="surface-name">CLI</div><div data-hf-id="hf-qy6q" class="surface-note">Initialize and verify any repository.</div></div><span data-hf-id="hf-10qo" class="surface-arrow">→</span></div>
+              <div data-hf-id="hf-qf34" id="surface-2" class="surface-row"><span data-hf-id="hf-4083" class="surface-index">02</span><div data-hf-id="hf-y7yw"><div data-hf-id="hf-ekw1" class="surface-name">MCP</div><div data-hf-id="hf-o1ul" class="surface-note">Expose verification tools to an MCP client.</div></div><span data-hf-id="hf-92wo" class="surface-arrow">→</span></div>
+              <div data-hf-id="hf-r6qx" id="surface-3" class="surface-row"><span data-hf-id="hf-4ej4" class="surface-index">03</span><div data-hf-id="hf-x11t"><div data-hf-id="hf-1wfs" class="surface-name">GitHub</div><div data-hf-id="hf-w3z5" class="surface-note">Read SHA-bound reports from Actions.</div></div><span data-hf-id="hf-7vzl" class="surface-arrow">→</span></div>
+            </div>
+          </div>
+          <div data-hf-id="hf-oomi" id="final-rule" class="final-rule"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#s1-brand", { x: -58, opacity: 0, duration: 0.62, ease: "expo.out" }, 0.24);
+      tl.from("#s1-eyebrow", { y: -22, opacity: 0, duration: 0.46, ease: "power3.out" }, 0.42);
+      tl.from("#s1-title", { y: 72, opacity: 0, duration: 0.88, ease: "power4.out" }, 0.58);
+      tl.from("#s1-meter", { x: 70, scale: 0.96, opacity: 0, duration: 0.7, ease: "back.out(1.2)" }, 1.02);
+      tl.from("#s1-meter .meter-row", { x: 24, opacity: 0, duration: 0.34, stagger: 0.11, ease: "sine.out" }, 1.38);
+      tl.from("#s1-caps .capability", { y: 28, opacity: 0, duration: 0.4, stagger: 0.1, ease: "circ.out" }, 1.76);
+      tl.to("#s1-meter .signal-dot", { scale: 1.5, duration: 0.38, yoyo: true, repeat: 5, stagger: 0.12, ease: "sine.inOut" }, 3.0);
+
+      tl.to("#scene-1", { x: -1920, duration: 0.55, ease: "power3.inOut" }, 7.2);
+      tl.fromTo("#scene-2", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.55, ease: "power3.inOut" }, 7.2);
+      tl.set("#scene-1", { opacity: 0 }, 7.76);
+      tl.from("#s2-label", { x: -44, opacity: 0, duration: 0.48, ease: "expo.out" }, 7.56);
+      tl.from("#s2-proof .proof-chip", { y: -26, opacity: 0, duration: 0.36, stagger: 0.09, ease: "power2.out" }, 7.72);
+      tl.from("#s2-title", { y: 54, opacity: 0, duration: 0.62, ease: "power4.out" }, 7.82);
+      tl.from("#s2-subtitle", { x: 42, opacity: 0, duration: 0.52, ease: "sine.out" }, 8.04);
+      tl.from("#s2-instrument", { scale: 0.965, opacity: 0, duration: 0.64, ease: "back.out(1.12)" }, 8.24);
+      tl.from("#node-a", { x: -52, opacity: 0, duration: 0.42, ease: "circ.out" }, 8.48);
+      tl.from("#node-b", { x: -52, opacity: 0, duration: 0.5, ease: "power3.out" }, 8.61);
+      tl.from("#gate", { scaleY: 0.72, opacity: 0, duration: 0.56, ease: "expo.out" }, 8.78);
+      tl.from("#sink", { x: 60, opacity: 0, duration: 0.46, ease: "back.out(1.05)" }, 9.02);
+      tl.from("#wire-a .wire-fill, #wire-b .wire-fill", { scaleX: 0, duration: 0.55, stagger: 0.13, ease: "power2.inOut" }, 9.35);
+      tl.from("#wire-out .wire-fill", { scaleX: 0, duration: 0.5, ease: "power3.inOut" }, 10.03);
+      tl.fromTo("#pulse-a", { x: 0 }, { x: 212, duration: 0.72, repeat: 3, repeatDelay: 0.55, ease: "power1.inOut" }, 10.15);
+      tl.fromTo("#pulse-b", { x: 0 }, { x: 212, duration: 0.72, repeat: 3, repeatDelay: 0.55, ease: "sine.inOut" }, 10.44);
+      tl.fromTo("#pulse-out", { x: 0 }, { x: 212, duration: 0.72, repeat: 3, repeatDelay: 0.55, ease: "power2.inOut" }, 10.78);
+
+      tl.to("#scene-2", { x: -1920, duration: 0.55, ease: "power3.inOut" }, 15.0);
+      tl.fromTo("#scene-3", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.55, ease: "power3.inOut" }, 15.0);
+      tl.set("#scene-2", { opacity: 0 }, 15.56);
+      tl.from("#s3-label", { x: -44, opacity: 0, duration: 0.46, ease: "expo.out" }, 15.38);
+      tl.from("#s3-meta", { y: -22, opacity: 0, duration: 0.38, ease: "power2.out" }, 15.52);
+      tl.from("#terminal", { y: 70, opacity: 0, duration: 0.68, ease: "power4.out" }, 15.68);
+      tl.from("#terminal .terminal-bar", { x: -34, opacity: 0, duration: 0.34, ease: "circ.out" }, 15.98);
+      tl.from("#cmd-1", { x: -28, opacity: 0, duration: 0.36, ease: "power3.out" }, 16.22);
+      tl.from("#cmd-2", { x: -28, opacity: 0, duration: 0.34, ease: "sine.out" }, 16.46);
+      tl.from("#cmd-3", { x: -28, opacity: 0, duration: 0.32, ease: "expo.out" }, 16.68);
+      tl.from("#out-1", { opacity: 0, duration: 0.3, ease: "power1.out" }, 17.22);
+      tl.from("#out-2", { opacity: 0, duration: 0.34, ease: "power2.out" }, 17.68);
+      tl.from("#out-3", { scale: 0.92, opacity: 0, duration: 0.48, ease: "back.out(1.35)" }, 18.2);
+      tl.from("#out-4", { y: 16, opacity: 0, duration: 0.32, ease: "circ.out" }, 18.62);
+      tl.from("#verdict", { x: 72, opacity: 0, duration: 0.58, ease: "expo.out" }, 18.05);
+      tl.from("#summary-1", { x: 50, opacity: 0, duration: 0.46, ease: "power3.out" }, 18.47);
+      tl.from("#summary-2", { x: 50, opacity: 0, duration: 0.4, ease: "sine.out" }, 18.74);
+      tl.to("#verdict", { borderColor: "#1630c4", duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 20.2);
+
+      tl.to("#scene-3", { x: -1920, duration: 0.55, ease: "power3.inOut" }, 24.0);
+      tl.fromTo("#scene-4", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.55, ease: "power3.inOut" }, 24.0);
+      tl.set("#scene-3", { opacity: 0 }, 24.56);
+      tl.from("#s4-label", { x: -44, opacity: 0, duration: 0.46, ease: "expo.out" }, 24.38);
+      tl.from("#s4-meta", { y: -20, opacity: 0, duration: 0.4, ease: "power2.out" }, 24.54);
+      tl.from("#s4-title", { y: 56, opacity: 0, duration: 0.62, ease: "power4.out" }, 24.68);
+      tl.from("#s4-subtitle", { x: 38, opacity: 0, duration: 0.48, ease: "sine.out" }, 25.04);
+      tl.from("#s4-note", { scale: 0.94, opacity: 0, duration: 0.4, ease: "back.out(1.2)" }, 25.42);
+      tl.from("#repo-panel", { x: 86, scale: 0.97, opacity: 0, duration: 0.68, ease: "expo.out" }, 24.88);
+      tl.from("#repo-panel .repo-header", { y: -28, opacity: 0, duration: 0.38, ease: "circ.out" }, 25.34);
+      tl.from("#repo-select", { x: 42, opacity: 0, duration: 0.4, ease: "power3.out" }, 25.72);
+      tl.from("#run-card", { y: 54, opacity: 0, duration: 0.56, ease: "back.out(1.12)" }, 26.08);
+      tl.from("#run-card .run-status", { scaleX: 0, transformOrigin: "left center", duration: 0.44, ease: "power4.out" }, 26.38);
+      tl.from("#run-card .run-detail", { x: -26, opacity: 0, duration: 0.38, ease: "sine.out" }, 26.62);
+      tl.from("#run-card .binding", { x: 34, opacity: 0, duration: 0.42, ease: "expo.out" }, 26.86);
+      tl.to("#run-card .binding", { backgroundColor: "#ffffff", duration: 0.48, yoyo: true, repeat: 3, ease: "sine.inOut" }, 28.3);
+
+      tl.to("#scene-4", { filter: "blur(12px)", scale: 1.025, opacity: 0, duration: 0.55, ease: "power2.inOut" }, 34.0);
+      tl.fromTo("#scene-5", { filter: "blur(12px)", scale: 0.975, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.55, ease: "power2.inOut" }, 34.08);
+      tl.from("#s5-brand", { x: -54, opacity: 0, duration: 0.58, ease: "expo.out" }, 34.46);
+      tl.from("#s5-label", { y: -22, opacity: 0, duration: 0.4, ease: "power2.out" }, 34.62);
+      tl.from("#s5-title", { y: 62, opacity: 0, duration: 0.72, ease: "power4.out" }, 34.74);
+      tl.from("#s5-url", { x: -36, opacity: 0, duration: 0.44, ease: "circ.out" }, 35.3);
+      tl.from("#surface-list", { x: 78, opacity: 0, duration: 0.58, ease: "back.out(1.08)" }, 34.9);
+      tl.from("#surface-1", { x: 52, opacity: 0, duration: 0.42, ease: "expo.out" }, 35.32);
+      tl.from("#surface-2", { x: 52, opacity: 0, duration: 0.48, ease: "sine.out" }, 35.56);
+      tl.from("#surface-3", { x: 52, opacity: 0, duration: 0.54, ease: "power3.out" }, 35.8);
+      tl.from("#final-rule", { scaleX: 0, duration: 0.76, ease: "power4.inOut" }, 36.2);
+      tl.to("#surface-list .surface-arrow", { x: 16, duration: 0.42, yoyo: true, repeat: 7, stagger: 0.12, ease: "sine.inOut" }, 37.0);
+      tl.to("#s5-content", { opacity: 0, duration: 0.72, ease: "power2.in" }, 42.1);
+
+      window.__timelines["rite-demo"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
